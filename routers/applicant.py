@@ -4,7 +4,7 @@ from typing import List
 
 from database import SessionLocal
 from models.applicant import Applicant as ApplicantModel
-from schemas.applicant import Applicant, ApplicantCreate, ApplicantUpdate
+from schemas.applicant import ApplicantResponse, ApplicantWithSimulations, ApplicantCreate, ApplicantUpdate
 
 router = APIRouter(
     prefix="/applicants",
@@ -19,7 +19,7 @@ def get_db():
     finally:
         db.close()
 
-@router.post("/", response_model=Applicant, status_code=status.HTTP_201_CREATED)
+@router.post("/", response_model=ApplicantResponse, status_code=status.HTTP_201_CREATED)
 def create_applicant(applicant: ApplicantCreate, db: Session = Depends(get_db)):
     db_applicant = db.query(ApplicantModel).filter(ApplicantModel.email == applicant.email).first()
     if db_applicant:
@@ -31,18 +31,18 @@ def create_applicant(applicant: ApplicantCreate, db: Session = Depends(get_db)):
     db.refresh(new_applicant)
     return new_applicant
 
-@router.get("/", response_model=List[Applicant])
+@router.get("/", response_model=List[ApplicantResponse])
 def read_applicants(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return db.query(ApplicantModel).offset(skip).limit(limit).all()
 
-@router.get("/{applicant_id}", response_model=Applicant)
+@router.get("/{applicant_id}", response_model=ApplicantWithSimulations)
 def read_applicant(applicant_id: int, db: Session = Depends(get_db)):
     applicant = db.query(ApplicantModel).filter(ApplicantModel.id == applicant_id).first()
     if applicant is None:
         raise HTTPException(status_code=404, detail="Applicant not found")
     return applicant
 
-@router.put("/{applicant_id}", response_model=Applicant)
+@router.put("/{applicant_id}", response_model=ApplicantResponse)
 def update_applicant(applicant_id: int, applicant_update: ApplicantUpdate, db: Session = Depends(get_db)):
     db_applicant = db.query(ApplicantModel).filter(ApplicantModel.id == applicant_id).first()
     if db_applicant is None:
