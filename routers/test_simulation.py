@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List
 
 from database import SessionLocal
+from auth.security import get_current_user
 from models.test_simulation import TestSimulation as TestSimulationModel
 from models.applicant import Applicant as ApplicantModel
 from schemas.test_simulation import TestSimulationResponse, TestSimulationWithApplicant, TestSimulationCreate, TestSimulationUpdate
@@ -21,7 +22,7 @@ def get_db():
         db.close()
 
 @router.post("/", response_model=TestSimulationResponse, status_code=status.HTTP_201_CREATED)
-def create_test_simulation(simulation: TestSimulationCreate, db: Session = Depends(get_db)):
+def create_test_simulation(simulation: TestSimulationCreate, db: Session = Depends(get_db), current_user: str = Depends(get_current_user)):
     # Check if applicant exists before creating simulation
     db_applicant = db.query(ApplicantModel).filter(ApplicantModel.id == simulation.applicant_id).first()
     if not db_applicant:
@@ -38,18 +39,18 @@ def create_test_simulation(simulation: TestSimulationCreate, db: Session = Depen
     return new_simulation
 
 @router.get("/", response_model=List[TestSimulationResponse])
-def read_test_simulations(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+def read_test_simulations(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), current_user: str = Depends(get_current_user)):
     return db.query(TestSimulationModel).offset(skip).limit(limit).all()
 
 @router.get("/{simulation_id}", response_model=TestSimulationWithApplicant)
-def read_test_simulation(simulation_id: int, db: Session = Depends(get_db)):
+def read_test_simulation(simulation_id: int, db: Session = Depends(get_db), current_user: str = Depends(get_current_user)):
     simulation = db.query(TestSimulationModel).filter(TestSimulationModel.id == simulation_id).first()
     if simulation is None:
         raise HTTPException(status_code=404, detail="Test Simulation not found")
     return simulation
 
 @router.put("/{simulation_id}", response_model=TestSimulationResponse)
-def update_test_simulation(simulation_id: int, simulation_update: TestSimulationUpdate, db: Session = Depends(get_db)):
+def update_test_simulation(simulation_id: int, simulation_update: TestSimulationUpdate, db: Session = Depends(get_db), current_user: str = Depends(get_current_user)):
     db_simulation = db.query(TestSimulationModel).filter(TestSimulationModel.id == simulation_id).first()
     if db_simulation is None:
         raise HTTPException(status_code=404, detail="Test Simulation not found")
@@ -63,7 +64,7 @@ def update_test_simulation(simulation_id: int, simulation_update: TestSimulation
     return db_simulation
 
 @router.delete("/{simulation_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_test_simulation(simulation_id: int, db: Session = Depends(get_db)):
+def delete_test_simulation(simulation_id: int, db: Session = Depends(get_db), current_user: str = Depends(get_current_user)):
     db_simulation = db.query(TestSimulationModel).filter(TestSimulationModel.id == simulation_id).first()
     if db_simulation is None:
         raise HTTPException(status_code=404, detail="Test Simulation not found")

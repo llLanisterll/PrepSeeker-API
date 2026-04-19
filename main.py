@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from database import engine, Base
 
-from routers import applicant, test_simulation
+from routers import applicant, test_simulation, auth
 
 from models.applicant import Applicant
 from models.test_simulation import TestSimulation
@@ -18,6 +18,7 @@ app = FastAPI(
 # Memasukkan router untuk entitas-entitas kita
 app.include_router(applicant.router)
 app.include_router(test_simulation.router)
+app.include_router(auth.router)
 
 @app.get("/")
 def read_root():
