@@ -1,0 +1,408 @@
+{
+  "info": {
+    "_postman_id": "07b4493f-5302-4a59-80cd-27235208de40",
+    "name": "Prep-Seeker-Api",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "54228533",
+    "_collection_link": "https://go.postman.co/collection/54228533-07b4493f-5302-4a59-80cd-27235208de40?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": []
+    },
+    {
+      "name": "Applicants",
+      "item": []
+    },
+    {
+      "name": "Test Simulations",
+      "item": []
+    },
+    {
+      "name": "POST /login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const response = pm.response.json();",
+              "",
+              "if (response.access_token) {",
+              "    pm.environment.set(\"token\", response.access_token);",
+              "    console.log(\"Token saved:\", response.access_token);",
+              "} else {",
+              "    console.log(\"Login failed or no access_token in response.\");",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded",
+            "disabled": false
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "type": "text",
+              "key": "username",
+              "value": "admin"
+            },
+            {
+              "type": "text",
+              "key": "password",
+              "value": "password123"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base_url}}/login",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "login"
+          ]
+        },
+        "description": "Get access token. Use username: admin, password: password123"
+      },
+      "response": []
+    },
+    {
+      "name": "GET /applicants/ — List all applicants",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/applicants/?skip=0&limit=100",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "applicants",
+            ""
+          ],
+          "query": [
+            {
+              "key": "skip",
+              "value": "0"
+            },
+            {
+              "key": "limit",
+              "value": "100"
+            }
+          ]
+        },
+        "description": "List all applicants"
+      },
+      "response": []
+    },
+    {
+      "name": "POST /applicants/ — Create applicant",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\": \"string\", \"email\": \"user@example.com\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/applicants/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "applicants",
+            ""
+          ]
+        },
+        "description": "Create applicant"
+      },
+      "response": []
+    },
+    {
+      "name": "GET /applicants/{id} — Get applicant detail",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/applicants/:id",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "applicants",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "1",
+              "description": "ID of the applicant"
+            }
+          ]
+        },
+        "description": "Get applicant detail"
+      },
+      "response": []
+    },
+    {
+      "name": "PUT /applicants/{id} — Update applicant",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\": \"string\", \"email\": \"user@example.com\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/applicants/:id",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "applicants",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id"
+            }
+          ]
+        },
+        "description": "Update applicant"
+      },
+      "response": []
+    },
+    {
+      "name": "DELETE /applicants/{id} — Delete applicant",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/applicants/:id",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "applicants",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id"
+            }
+          ]
+        },
+        "description": "Delete applicant"
+      },
+      "response": []
+    },
+    {
+      "name": "GET /simulations/ — List all simulations",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "disabled": false
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/simulations/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "simulations",
+            ""
+          ]
+        },
+        "description": "List all simulations"
+      },
+      "response": []
+    },
+    {
+      "name": "POST /simulations/ — Add simulation score",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "disabled": false
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"applicant_id\": 1, \"score\": 0.0, \"status\": \"string\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/simulations/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "simulations",
+            ""
+          ]
+        },
+        "description": "Add simulation score"
+      },
+      "response": []
+    },
+    {
+      "name": "GET /simulations/{id} — Get simulation detail",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "disabled": false
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/simulations/:id",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "simulations",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id"
+            }
+          ]
+        },
+        "description": "Get simulation detail"
+      },
+      "response": []
+    },
+    {
+      "name": "PUT /simulations/{id} — Update simulation",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "disabled": false
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"score\": 0.0, \"status\": \"string\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/simulations/:id",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "simulations",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id"
+            }
+          ]
+        },
+        "description": "Update simulation"
+      },
+      "response": []
+    },
+    {
+      "name": "DELETE /simulations/{id} — Delete simulation",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "disabled": false
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/simulations/:id",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "simulations",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id"
+            }
+          ]
+        },
+        "description": "Delete simulation"
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": ""
+    }
+  ]
+}
