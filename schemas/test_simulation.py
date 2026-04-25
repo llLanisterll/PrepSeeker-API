@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 
 
@@ -8,7 +8,7 @@ from typing import Optional
 
 class TestSimulationBase(BaseModel):
     """Schema dasar untuk field-field TestSimulation."""
-    score: float
+    score: float = Field(..., ge=0.0, le=100.0, description="Skor simulasi dari 0 hingga 100")
     status: str
 
 
@@ -27,7 +27,7 @@ class TestSimulationUpdate(BaseModel):
     """Schema untuk mengupdate TestSimulation.
     Semua field bersifat opsional (partial update).
     """
-    score: Optional[float] = None
+    score: Optional[float] = Field(None, ge=0.0, le=100.0)
     status: Optional[str] = None
 
 

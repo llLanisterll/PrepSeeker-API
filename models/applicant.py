@@ -9,5 +9,5 @@ class Applicant(Base):
     name = Column(String, index=True)
     email = Column(String, unique=True, index=True)
     
-    # One to Many relationship dengan TestSimulation
-    test_simulations = relationship("TestSimulation", back_populates="applicant")
+    # One to Many relationship dengan TestSimulation (beserta cascade delete)
+    test_simulations = relationship("TestSimulation", back_populates="applicant", cascade="all, delete-orphan")

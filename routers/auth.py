@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
+from pydantic import BaseModel
 from datetime import timedelta
 from auth.security import verify_password, get_password_hash, create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
 
@@ -14,6 +15,23 @@ dummy_db = {
         "hashed_password": get_password_hash("password123")
     }
 }
+
+# Schema untuk pendaftaran user baru
+class UserCreate(BaseModel):
+    username: str
+    password: str
+
+@router.post("/register", status_code=status.HTTP_201_CREATED)
+def register_user(user: UserCreate):
+    if user.username in dummy_db:
+        raise HTTPException(status_code=400, detail="Username sudah terdaftar")
+    
+    # Simpan ke dummy_db (Pada aplikasi nyata harusnya ke database session sesungguhnya)
+    dummy_db[user.username] = {
+        "username": user.username,
+        "hashed_password": get_password_hash(user.password)
+    }
+    return {"message": "User berhasil didaftarkan"}
 
 @router.post("/login", response_model=dict)
 def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
